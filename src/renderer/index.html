@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidro Forte - Emissão de Certidões</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+    <!-- ======================== TELA DE LOGIN ======================== -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <img src="../../logo.png" alt="Logo Hidro Forte" class="login-logo">
+            <h1 class="login-title">Hidro Forte</h1>
+            <p class="login-subtitle">Emissão de Certidões</p>
+            <div class="login-form">
+                <div class="login-field">
+                    <label for="loginUsuario">Usuário</label>
+                    <input type="text" id="loginUsuario" placeholder="Digite seu usuário" autocomplete="username">
+                </div>
+                <div class="login-field">
+                    <label for="loginSenha">Senha</label>
+                    <input type="password" id="loginSenha" placeholder="Digite sua senha" autocomplete="current-password">
+                </div>
+                <label class="login-lembrar">
+                    <input type="checkbox" id="loginLembrar">
+                    <span>Salvar senha</span>
+                </label>
+                <button class="btn btn-primary login-btn" id="btnLogin" onclick="realizarLogin()">Entrar</button>
+                <div class="login-erro" id="loginErro"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="appSidebar" style="display:none;">
+        <div class="sidebar-logo">
+            <img src="../../logo.png" alt="Logo" class="sidebar-logo-img">
+            <h2>Hidro Forte</h2>
+            <span>Emissão de Certidões</span>
+        </div>
+        <div class="sidebar-nav">
+            <button class="nav-item active" data-page="emitir" onclick="navigateTo('emitir')">
+                <span class="icon">📄</span> Emitir Certidões
+            </button>
+            <button class="nav-item" data-page="relatorio" onclick="navigateTo('relatorio')">
+                <span class="icon">📊</span> Relatório
+            </button>
+            <button class="nav-item" data-page="notificacoes" onclick="navigateTo('notificacoes')" id="navNotificacoes" style="display:none;">
+                <span class="icon">🔔</span> Notificações
+            </button>
+            <button class="nav-item" data-page="admin" onclick="navigateTo('admin')" id="navAdmin" style="display:none;">
+                <span class="icon">👤</span> Administração
+            </button>
+        </div>
+        <div class="sidebar-user" id="sidebarUser">
+            <span id="sidebarUserName">Usuário</span>
+            <button class="btn-logout" onclick="realizarLogout()" title="Sair">🚪</button>
+        </div>
+        <div class="sidebar-footer">
+            Desenvolvido por Luan Oliveira (63 98144-8181)
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main" id="appMain" style="display:none;">
+
+        <!-- ======================== PÁGINA: EMITIR ======================== -->
+        <div class="page active" id="page-emitir">
+
+            <div class="page-header">
+                <h1>Emitir Certidões</h1>
+                <p>Emita certidões fiscais de forma rápida e automatizada</p>
+            </div>
+
+            <!-- CNPJ INPUT -->
+            <div class="card">
+                <div class="card-title">🔍 Identificação</div>
+                <div class="input-row">
+                    <div class="input-col">
+                        <label for="cnpj">CNPJ</label>
+                        <input type="text" id="cnpj" placeholder="00.000.000/0000-00" maxlength="18">
+                    </div>
+                    <button class="btn btn-primary" id="btnBuscarEmpresa" onclick="buscarEmpresa()">Buscar</button>
+                </div>
+                <div class="empresa-info" id="empresaInfo"></div>
+            </div>
+
+            <!-- CERTIDÕES -->
+            <div class="card">
+                <div class="card-title">📄 Certidões Disponíveis</div>
+                <div class="certidoes-grid">
+                    <div class="cert-card">
+                        <div class="cert-icon">🏛️</div>
+                        <div class="cert-name">Federal</div>
+                        <div class="cert-desc">Receita Federal do Brasil</div>
+                        <button class="btn btn-primary btn-sm" onclick="emitirCertidao('federal')">Emitir</button>
+                    </div>
+                    <div class="cert-card">
+                        <div class="cert-icon">🏢</div>
+                        <div class="cert-name">Estadual</div>
+                        <div class="cert-desc">SEFAZ Tocantins</div>
+                        <button class="btn btn-primary btn-sm" onclick="emitirCertidao('estadual')">Emitir</button>
+                    </div>
+                    <div class="cert-card">
+                        <div class="cert-icon">👷</div>
+                        <div class="cert-name">FGTS</div>
+                        <div class="cert-desc">Caixa Econômica Federal</div>
+                        <button class="btn btn-primary btn-sm" onclick="emitirCertidao('fgts')">Emitir</button>
+                    </div>
+                    <div class="cert-card">
+                        <div class="cert-icon">⚖️</div>
+                        <div class="cert-name">Trabalhista</div>
+                        <div class="cert-desc">TST — CNDT</div>
+                        <button class="btn btn-primary btn-sm" onclick="emitirCertidao('trabalhista')">Emitir</button>
+                    </div>
+                    <div class="cert-card">
+                        <div class="cert-icon">🏘️</div>
+                        <div class="cert-name">Municipal</div>
+                        <div class="cert-desc">Prefeitura de Palmas</div>
+                        <button class="btn btn-primary btn-sm" onclick="emitirCertidao('palmas')">Emitir</button>
+                    </div>
+                </div>
+                <button class="btn btn-todas" id="btnTodas" onclick="emitirTodas()">
+                    🚀 Emitir Todas as Certidões
+                </button>
+            </div>
+
+            <!-- STATUS / LOG -->
+            <div class="card">
+                <div class="card-title">📊 Status</div>
+                <div class="loading-bar" id="loading">
+                    <div class="spinner-sm"></div>
+                    <span class="loading-text" id="loadingText">Processando...</span>
+                </div>
+                <div class="log-area" id="log">
+                    <div class="log-item info">Aguardando...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================== PÁGINA: RELATÓRIO ======================== -->
+        <div class="page" id="page-relatorio">
+
+            <div class="page-header">
+                <h1>Relatório de Certidões</h1>
+                <p>Acompanhe o status e vencimento das certidões emitidas</p>
+            </div>
+
+            <!-- STATS + GRÁFICO -->
+            <div class="relatorio-top">
+                <div class="stats-row" id="statsRow">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Emitidas</div>
+                        <div class="stat-value azul" id="statTotal">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Ativas</div>
+                        <div class="stat-value verde" id="statAtivas">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Vencendo em 15 dias</div>
+                        <div class="stat-value amarelo" id="statAlerta">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Vencidas</div>
+                        <div class="stat-value vermelho" id="statVencidas">0</div>
+                    </div>
+                </div>
+
+                <div class="grafico-card" id="graficoCard">
+                    <div class="grafico-titulo">Distribuição por Status</div>
+                    <div class="grafico-container">
+                        <canvas id="graficoStatus"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEARCH + TABLE -->
+            <div class="card">
+                <div class="search-bar">
+                    <input type="text" id="searchRelatorio" placeholder="🔍 Pesquisar por nome da empresa..." oninput="filtrarRelatorio()">
+                    <button class="btn btn-primary btn-sm" onclick="atualizarRelatorio()">🔄 Atualizar</button>
+                    <button class="btn btn-success btn-sm" onclick="abrirPastaCertidoes()">📂 Abrir Pasta</button>
+                </div>
+                <div class="table-wrapper">
+                    <table id="tabelaRelatorio">
+                        <thead>
+                            <tr>
+                                <th onclick="ordenarRelatorio('empresa')" id="th-empresa">Empresa <span class="sort-arrow">▲</span></th>
+                                <th onclick="ordenarRelatorio('tipo')" id="th-tipo">Tipo de Certidão <span class="sort-arrow">▲</span></th>
+                                <th onclick="ordenarRelatorio('status')" id="th-status">Status <span class="sort-arrow">▲</span></th>
+                                <th onclick="ordenarRelatorio('vencimento')" id="th-vencimento">Data de Vencimento <span class="sort-arrow">▲</span></th>
+                                <th onclick="ordenarRelatorio('dias')" id="th-dias">Dias p/ Vencer <span class="sort-arrow">▲</span></th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-icon">📭</div>
+                    <p>Nenhuma certidão registrada</p>
+                    <p class="empty-hint">Emita certidões para vê-las aqui</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================== PÁGINA: NOTIFICAÇÕES ======================== -->
+        <div class="page" id="page-notificacoes">
+
+            <div class="page-header">
+                <h1>Notificações por E-mail</h1>
+                <p>Configure alertas automáticos de vencimento de certidões</p>
+            </div>
+
+            <!-- STATUS NOTIFICAÇÃO -->
+            <div class="notif-status-bar" id="notifStatusBar" style="display:none;">
+                <span id="notifStatusIcon">✅</span>
+                <span id="notifStatusMsg">Mensagem</span>
+            </div>
+
+            <!-- CONFIG E-MAIL -->
+            <div class="card">
+                <div class="card-title">📧 Configuração de E-mail</div>
+                <div class="notif-form">
+                    <div class="notif-row">
+                        <div class="notif-field">
+                            <label for="emailRemetente">E-mail remetente (Gmail)</label>
+                            <input type="email" id="emailRemetente" placeholder="seuemail@gmail.com">
+                        </div>
+                        <div class="notif-field">
+                            <label for="emailSenhaApp">Senha de App (16 caracteres)</label>
+                            <input type="password" id="emailSenhaApp" placeholder="xxxx xxxx xxxx xxxx">
+                        </div>
+                    </div>
+                    <div class="notif-row">
+                        <div class="notif-field full">
+                            <label for="emailDestinatarios">E-mail(s) destinatário(s) <span class="hint">(separe por vírgula)</span></label>
+                            <input type="text" id="emailDestinatarios" placeholder="destino@email.com, outro@email.com">
+                        </div>
+                    </div>
+                    <div class="notif-row">
+                        <div class="notif-field">
+                            <label for="diasAlerta">Dias antes do vencimento para alertar</label>
+                            <input type="number" id="diasAlerta" min="1" max="90" value="15">
+                        </div>
+                    </div>
+                    <div class="notif-row">
+                        <label class="notif-toggle">
+                            <input type="checkbox" id="notifAtivo" checked>
+                            <span>Notificações ativas</span>
+                        </label>
+                        <label class="notif-toggle">
+                            <input type="checkbox" id="notifAoAbrir" checked>
+                            <span>Verificar automaticamente ao abrir o app</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="notif-actions">
+                    <button class="btn btn-primary" onclick="salvarConfigEmail()">💾 Salvar Configuração</button>
+                    <button class="btn btn-success" onclick="enviarEmailTeste()">📤 Enviar E-mail de Teste</button>
+                    <button class="btn btn-todas" onclick="verificarVencimentosAgora()">🔍 Verificar Vencimentos Agora</button>
+                </div>
+            </div>
+
+            <!-- HISTÓRICO -->
+            <div class="card">
+                <div class="card-title">📋 Última Verificação</div>
+                <div id="ultimaVerificacao" class="notif-historico">
+                    <p class="empty-hint">Nenhuma verificação realizada ainda</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================== PÁGINA: ADMINISTRAÇÃO ======================== -->
+        <div class="page" id="page-admin">
+
+            <div class="page-header">
+                <h1>Administração</h1>
+                <p>Gerencie os acessos ao sistema</p>
+            </div>
+
+            <!-- CADASTRAR NOVO USUÁRIO -->
+            <div class="card">
+                <div class="card-title">➕ Cadastrar Novo Acesso</div>
+                <div class="admin-form">
+                    <div class="admin-row">
+                        <div class="admin-field">
+                            <label for="adminNovoUsuario">Usuário</label>
+                            <input type="text" id="adminNovoUsuario" placeholder="Nome de usuário">
+                        </div>
+                        <div class="admin-field">
+                            <label for="adminNovaSenha">Senha</label>
+                            <input type="password" id="adminNovaSenha" placeholder="Senha">
+                        </div>
+                        <div class="admin-field">
+                            <label for="adminNovoNivel">Nível de Acesso</label>
+                            <select id="adminNovoNivel">
+                                <option value="funcionario">Funcionário</option>
+                                <option value="administrador">Administrador</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="cadastrarUsuario()">➕ Cadastrar Usuário</button>
+                </div>
+                <div class="admin-status" id="adminStatus"></div>
+            </div>
+
+            <!-- LISTA DE USUÁRIOS -->
+            <div class="card">
+                <div class="card-title">👥 Usuários Cadastrados</div>
+                <div class="table-wrapper">
+                    <table id="tabelaUsuarios">
+                        <thead>
+                            <tr>
+                                <th>Usuário</th>
+                                <th>Nível</th>
+                                <th>Criado em</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaUsuariosBody">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="empty-state" id="emptyUsuarios">
+                    <div class="empty-icon">👤</div>
+                    <p>Nenhum usuário cadastrado</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
+    <div class="modal-overlay" id="modalDeletar">
+        <div class="modal-box">
+            <h3>🗑️ Excluir Certidão</h3>
+            <p id="modalDeletarMsg">Tem certeza que deseja excluir esta certidão?</p>
+            <label class="modal-checkbox">
+                <input type="checkbox" id="checkDeletarArquivo">
+                Também excluir o arquivo PDF do disco
+            </label>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="fecharModalDeletar()">Cancelar</button>
+                <button class="btn btn-danger" onclick="confirmarDeletar()">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast de atualização automática -->
+    <div id="updateToast" class="update-toast oculto">
+        <div class="update-toast-content">
+            <span id="updateIcon" class="update-toast-icon">🔄</span>
+            <div class="update-toast-text">
+                <strong id="updateTitle">Atualizando...</strong>
+                <span id="updateMsg"></span>
+            </div>
+            <div id="updateProgress" class="update-progress oculto">
+                <div id="updateProgressBar" class="update-progress-bar"></div>
+            </div>
+            <button id="btnUpdateRestart" class="btn btn-primary btn-sm oculto" onclick="instalarUpdate()">
+                🔁 Reiniciar Agora
+            </button>
+            <button class="update-toast-close" onclick="fecharUpdateToast()">✕</button>
+        </div>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>
