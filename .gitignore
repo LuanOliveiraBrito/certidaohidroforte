@@ -1,0 +1,26 @@
+# Variáveis sensíveis
+.env
+
+# Dependências
+node_modules/
+
+# Build
+dist/
+
+# Chrome bundled (muito pesado, ~170MB)
+chrome-bundled/
+
+# Certidões emitidas (dados locais)
+certidões/
+
+# Firebase credentials (sensível)
+src/config/firebase-credentials.json
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
