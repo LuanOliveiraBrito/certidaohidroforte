@@ -1,0 +1,6 @@
+node_modules/
+dist/
+chrome-bundled/
+certidões/
+src/config/firebase-credentials.json
+*.log
